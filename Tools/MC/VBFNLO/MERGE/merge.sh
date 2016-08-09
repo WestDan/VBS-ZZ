@@ -39,7 +39,7 @@ fi
 
 shift
 while [ $# -gt 0 ]; do
-    if [ ! -d $1  || ! -f "$1/event.lhe" ]; then
+    if ! [  -d $1 ] || ! [ -f "$1/event.lhe" ]; then
         echo "Input option $1 is not a dir. or file event.lhe doesn't exist within this dir.  ignore it"
 	shift
 	continue

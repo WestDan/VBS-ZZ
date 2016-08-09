@@ -81,7 +81,6 @@ void vbfnlo_llll_cut()
     Int_t    parent1_index_l[4], parent2_index_l[4];
     Double_t p_Z[2], pt_Z[2], eta_Z[2], phi_Z[2];
     Double_t E_Z[2], M_Z[2];
-    Double_t px_ZZ, py_ZZ, pz_ZZ;
     Double_t p_ZZ, pt_ZZ;
     Double_t E_ZZ, M_ZZ;
     Double_t eta_ZZ, phi_ZZ;
@@ -89,7 +88,6 @@ void vbfnlo_llll_cut()
     Double_t p_j[2], pt_j[2];
     Double_t E_j[2], M_j[2];
     Double_t eta_j[2], phi_j[2];
-    Double_t px_jj, py_jj, pz_jj;
     Double_t p_jj, pt_jj;
     Double_t eta_jj, phi_jj;
     Double_t E_jj, M_jj;
@@ -177,13 +175,77 @@ void vbfnlo_llll_cut()
 
     for(int i=0; i<(int)input_tree->GetEntries(); i++)
     {
+	// Initialize variables
+	for (int i=0; i<4; i++)
+	{
+	    px_l[i] = -9999E10;
+	    py_l[i] = -9999E10;
+	    pz_l[i] = -9999E10;
+	    p_l[i] = -9999E10;
+	    pt_l[i] = -9999E10;
+	    eta_l[i] = -9999E10;
+	    phi_l[i] = -9999E10;
+	    E_l[i] = -9999E10;
+	    M_l[i] = -9999E10;
+	    parent1_index_l[i] = -1;
+	    parent2_index_l[i] = -1;
+	}
+
+	for (int i=0; i<2; i++)
+	{
+	    p_Z[i] = -9999E10;
+	    pt_Z[i] = -9999E10;
+	    eta_Z[i] = -9999E10;
+	    phi_Z[i] = -9999E10;
+	    E_Z[i] = -9999E10;
+	    M_Z[i] = -9999E10;
+
+	    px_j[i] = -9999E10;
+	    py_j[i] = -9999E10;
+	    pz_j[i] = -9999E10;
+	    p_j[i] = -9999E10;
+	    pt_j[i] = -9999E10;
+	    eta_j[i] = -9999E10;
+	    phi_j[i] = -9999E10;
+	    E_j[i] = -9999E10;
+	    M_j[i] = -9999E10;
+	}
+	
+	p_ZZ = -9999E10;
+	pt_ZZ = -9999E10;
+	eta_ZZ = -9999E10;
+	phi_ZZ = -9999E10;
+	E_ZZ = -9999E10;
+	M_ZZ = -9999E10;
+
+	p_jj = -9999E10;
+	pt_jj = -9999E10;
+	eta_jj = -9999E10;
+	phi_jj = -9999E10;
+	E_jj = -9999E10;
+	M_jj = -9999E10;
+
+	deltaEta_jj = -9999E10;
+	centrality = -9999E10;
+
+	double rap_j[2]={-9999E10, -9999E10}, rap_ZZ=-9999E10;
+
+	FLAG_cut["lepEta"] = false;
+	FLAG_cut["lepPt"] = false;
+	FLAG_cut["mZ1"] = false;
+	FLAG_cut["mZ2"] = false;
+	FLAG_cut["numJet"] = false;
+	FLAG_cut["mjj"] = false;
+	FLAG_cut["deltaJetEta"] = false;
+	FLAG_cut["centrality"] = false;
+
 	input_tree->GetEntry(i);
 
 	int index_l=0, index_e=0, index_m=0, index_j=0;
 	for (int j=0; j<10; j++)
 	{
 	    if(status[j] != 1) continue;
-	    else if (abs(pdgID[j]) == 1 || abs(pdgID[j]) == 2)  // jet
+	    else if (abs(pdgID[j]) == 1 || abs(pdgID[j]) == 2 || abs(pdgID[j]) == 3 || abs(pdgID[j]) == 4)  // jet
 	    {
 		px_j[index_j] = px[j];
 		py_j[index_j] = py[j];
@@ -218,26 +280,17 @@ void vbfnlo_llll_cut()
 	    }
 	}
 
-	for (int i=0; i<4; i++)
-	{
-	    convert(px_l[i], py_l[i], pz_l[i], p_l[i], pt_l[i], eta_l[i], phi_l[i]);
-	}
-	for (int i=0; i<2; i++)
-	{
-	    convert(px_j[i], py_j[i], pz_j[i], p_j[i], pt_j[i], eta_j[i], phi_j[i]);
-	}
 
-
-	double px_Z[2], py_Z[2], pz_Z[2];
-	double rap_j[2];
-	double rap_ZZ;
-
-	// pairs leptons, look firstly at their pID, then their parent 
-	// index
-	// UNSURE, WAITED FOR CONFIRMATION.
-	int index_Z = 0;
 	if( (index_e == 2 && index_m ==2) || (index_e == 4 && index_m == 0) || (index_e == 0 && index_m == 4) )
 	{
+	    for (int i=0; i<4; i++)
+	    {
+		convert(px_l[i], py_l[i], pz_l[i], p_l[i], pt_l[i], eta_l[i], phi_l[i]);
+	    }
+
+	// pairs leptons, look firstly at their pID, then their parent 
+	    double px_Z[2], py_Z[2], pz_Z[2];
+	    int index_Z = 0;
 	    for ( int i=0; i<4; i++)
 	    {
 		for (int j=i+1; j<4; j++)
@@ -254,50 +307,62 @@ void vbfnlo_llll_cut()
 		    }
 		}
 	    }
-	}
 
-	if(index_Z == 2)
-	{
-	    px_ZZ = px_Z[0] + px_Z[1];
-	    py_ZZ = py_Z[0] + py_Z[1];
-	    pz_ZZ = pz_Z[0] + pz_Z[1];
-	    E_ZZ = E_Z[0] + E_Z[1];
-	    convert(px_ZZ, py_ZZ, pz_ZZ, p_ZZ, pt_ZZ, eta_ZZ, phi_ZZ);
-	    M_ZZ = sqrt(pow(E_ZZ,2) - pow(p_ZZ, 2));
-	    rap_ZZ = 0.5*log((E_ZZ + pz_ZZ) / (E_ZZ - pz_ZZ));
+	    if(index_Z == 2)
+	    {
+		double px_ZZ = px_Z[0] + px_Z[1];
+		double py_ZZ = py_Z[0] + py_Z[1];
+		double pz_ZZ = pz_Z[0] + pz_Z[1];
+		E_ZZ = E_Z[0] + E_Z[1];
+		convert(px_ZZ, py_ZZ, pz_ZZ, p_ZZ, pt_ZZ, eta_ZZ, phi_ZZ);
+		M_ZZ = sqrt(pow(E_ZZ,2) - pow(p_ZZ, 2));
+		rap_ZZ = 0.5*log((E_ZZ + pz_ZZ) / (E_ZZ - pz_ZZ));
 
-	    // sort the two Z particles
-	    if ( abs(M_Z[1] - Z_MASS) < abs(M_Z[0] - Z_MASS))
-	    {
-		swap(pt_Z[0], pt_Z[1]);
-		swap(eta_Z[0], eta_Z[1]);
-		swap(phi_Z[0], phi_Z[1]);
-		swap(E_Z[0], E_Z[1]);
-		swap(M_Z[0], M_Z[1]);
-	    }
-	}
-	// sort the four leptons pt and two jet pt
-	for( int i=0; i<4; i++ )
-	{
-	    for( int j=i+1; j<4; j++ )
-	    {
-		if ( pt_l[j] > pt_l[i] )
+		// sort the two Z particles
+		if ( abs(M_Z[1] - Z_MASS) < abs(M_Z[0] - Z_MASS))
 		{
-		    // only care about those important parameters, px, py , pz and parent_index are discarded.
-		    swap(pt_l[i], pt_l[j]);
-		    swap(eta_l[i], eta_l[j]);
-		    swap(phi_l[i], phi_l[j]);
-		    swap(E_l[i], E_l[j]);
-		    swap(M_l[i], M_l[j]);
+		    swap(pt_Z[0], pt_Z[1]);
+		    swap(eta_Z[0], eta_Z[1]);
+		    swap(phi_Z[0], phi_Z[1]);
+		    swap(E_Z[0], E_Z[1]);
+		    swap(M_Z[0], M_Z[1]);
+		}
+	    }
+
+	    // sort leptons
+	    for( int i=0; i<4; i++ )
+	    {
+		for( int j=i+1; j<4; j++ )
+		{
+		    if ( pt_l[j] > pt_l[i] )
+		    {
+			// only care about those important parameters, px, py , pz and parent_index are discarded.
+			swap(pt_l[i], pt_l[j]);
+			swap(eta_l[i], eta_l[j]);
+			swap(phi_l[i], phi_l[j]);
+			swap(E_l[i], E_l[j]);
+			swap(M_l[i], M_l[j]);
+		    }
 		}
 	    }
 	}
+	else 
+	{
+	    cout << " event " << i << " doesn't have 4 leptons";
+	    continue;
+	}
+
     
 	if( index_j == 2)
 	{
-	    px_jj = px_j[0] + px_j[1];
-	    py_jj = py_j[0] + py_j[1];
-	    pz_jj = pz_j[0] + pz_j[1];
+	    for (int i=0; i<2; i++)
+	    {
+		convert(px_j[i], py_j[i], pz_j[i], p_j[i], pt_j[i], eta_j[i], phi_j[i]);
+	    }
+
+	    double px_jj = px_j[0] + px_j[1];
+	    double py_jj = py_j[0] + py_j[1];
+	    double pz_jj = pz_j[0] + pz_j[1];
 	    E_jj = E_j[0] + E_j[1];
 	    convert(px_jj, py_jj, pz_jj, p_jj, pt_jj, eta_jj, phi_jj);
 	    M_jj = sqrt(pow(E_jj, 2) - pow(p_jj, 2));
@@ -315,23 +380,38 @@ void vbfnlo_llll_cut()
 	    {
 		rap_j[i] = 0.5*log((E_j[i] + pz_j[i]) / (E_j[i] - pz_j[i]));
 	    }
+
+	    deltaEta_jj = abs(eta_j[0] - eta_j[1]);
+	}
+	else 
+	{
+	    cout << "jet number less than 2";
+	    continue;
 	}
 
-	deltaEta_jj = abs(eta_j[0] - eta_j[1]);
 	centrality = (rap_ZZ - (rap_j[0] + rap_j[1])/2 ) / abs(rap_j[0] - rap_j[1]);
 
 	// lepton Eta < 2.5
-	if( abs(eta_l[0])<2.5 && abs(eta_l[1])<2.5 && abs(eta_l[0])<2.5 && abs(eta_l[1]) < 2.5 )
+	if( abs(eta_l[0])<2.5 && abs(eta_l[1])<2.5 && abs(eta_l[2])<2.5 && abs(eta_l[3]) < 2.5 )
 	{
 	    FLAG_cut["lepEta"] = true;
 	}
 
 	// lepton Pt > 7Gev
-	if( pt_l[0]>7 && pt_l[1]>7 && pt_l[0]>7 && pt_l[1]>7 )
+	if( pt_l[0]>7 && pt_l[1]>7 && pt_l[2]>7 && pt_l[3]>7 )
 	{
 	    FLAG_cut["lepPt"] = true;
 	}
 
+	// Z mass
+	if( abs(M_Z[0] - Z_MASS) < 25 )
+	{
+	    FLAG_cut["mZ1"] = true;
+	}
+	if( abs(M_Z[1] - Z_MASS) < 25 )
+	{
+	    FLAG_cut["mZ2"] = true;
+	}
 	// number of Jet (Jet Pt > 25Gev)
 	if( pt_j[0]>25 && pt_j[1]>25 )
 	{
@@ -357,7 +437,7 @@ void vbfnlo_llll_cut()
 	}
 
 	// choose wanted cuts 
-	if (FLAG_cut["lepEta"] && FLAG_cut["lepPt"] && FLAG_cut["numJet"] && FLAG_cut["mjj"] && FLAG_cut["deltaJetEta"] && FLAG_cut["centrality"] )
+	if (FLAG_cut["lepEta"] && FLAG_cut["lepPt"] && FLAG_cut["mZ1"]  && FLAG_cut["mZ2"] && FLAG_cut["numJet"] && FLAG_cut["mjj"] && FLAG_cut["deltaJetEta"] && FLAG_cut["centrality"] )
 	{
 	    output_tree->Fill();
 	}
