@@ -1,0 +1,5 @@
+Run "./convert.py" to check the help message
+One may need to replace
+> ROOTSYS = '/afs/atlas.umich.edu/opt/root/lib'
+To the actual ROOT location in their own computer
+

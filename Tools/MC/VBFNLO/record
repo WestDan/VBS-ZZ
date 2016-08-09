@@ -1,0 +1,31 @@
+# conpilation
+1: only make work; make -j 10 results in error, don't know why. 
+
+
+# running
+1: if comfigured without --enable-processes [default value], will 
+unable to run 3210 [QCD ZZjj] process. 
+1.1: To run 3210 process, compile VBFNLO with the --enable-processes=all option.
+
+2: for 3210_QCDZZjj_l process, some configure options like:
+    Higgs mass = 125, 126 GeV
+    Bottom Mass
+    Charm Mass
+    Tau Mass
+   don't make difference in XS.
+
+
+## runtime               
+in lxplus:
+LO 330_ZZ: with ROOT output -- 30m 
+LO 330_ZZ: 10000 events	    -- 1h
+LO 330_ZZ: 100000 event.lhe	    -- 3.5h
+NLO 330_ZZ:with ROOT output -- 7h 
+LO 3210_QCDZZjj_l : ROOT output -- 20m
+NLO 3210_QCDZZjj_l: ROOT output -- 8h 
+
+LO 210_ZZjj_lllljj:
+    no event output: 6h
+    1000 event : 14h 
+    100	 event : 8h
+
