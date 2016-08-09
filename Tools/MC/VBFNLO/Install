@@ -1,0 +1,13 @@
+lxplus:
+    /afs/cern.ch/work/w/weibin/public/tools/MC/VBFNLO_2/:
+    in dir. VBFNLO-2.7.1:
+	configure:
+# LoopTools-2.12 should be typo, which should be LoopTools-2.13
+	    ./configure --prefix="/afs/cern.ch/work/w/weibin/public/tools/MC/VBFNLO_2/" --enable-processes=all --with-LOOPTOOLS="/afs/cern.ch/work/w/weibin/public/tools/MC/LoopTools-2.12/LoopTools-2.13/x86_64-Linux/" --with-root="/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/root/6.04.14-x86_64-slc6-gcc49-opt/" --enable-shared=no 
+	make:
+# make -j 10 will result in error, while make will work , don't know why !!!
+	    make > /dev/null
+	Install:
+	    make install
+	
+   
