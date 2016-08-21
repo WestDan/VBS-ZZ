@@ -1,4 +1,4 @@
-#!/bin/bash
+#/bin/bash
 # stript_LHE.sh
 
 # stript fake events ( events not containing 13 lines per event )
@@ -12,7 +12,7 @@ E_BADCHOICE=37
 
 usage()
 {
-    echo    "Usage: `basename $0` input.lhe [output.lhe]"
+    echo    "Usage: stript_LHE.sh input.lhe [output.lhe]"
     echo -e "\tif output file not set, default output is input_strip.lhe"
 }
 
@@ -63,9 +63,3 @@ fi
 
 
 awk -v RS='</event>\n' '{ if(NF == 137) print $0"</event>"}' $INPUT > $OUTPUT 
-
-exit 0
-
-
-
-
