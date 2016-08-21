@@ -29,3 +29,38 @@ LO 210_ZZjj_lllljj:
     1000 event : 14h 
     100	 event : 8h
 
+in condor:
+    LO 3211_llvv: 5000 events:  -- 30m
+
+
+
+
+# event production
+ui01.lcg.ustc.edu.cn:condor
+    210_eemumu: 743020
+    210_eeee: 964035
+    210_mumumumu: 1032021
+
+    211_eevv: 490000 ( 11, -11, 12, -12) 
+    211_eevv: 500000  ( 11, -11, 14, -14)
+    211_eevv:  500000 ( 11, -11, 16, -16)
+    211_mumuvv: 500000 ( 13, -13, 12, -12)  
+    211_mumuvv: 500000 ( 13, -13, 14, -14)  
+    211_mumuvv: 500000 ( 13, -13, 16, -16)  
+
+    3210_eemumu:  1037085 (fake events)
+    3210_eeee: 997173(less than, some fake events)
+    3210_mumumumu: 1025402 (fake events)
+
+    3211_eevv: 1000000  ( 11, -11, 12, -12) 
+    3211_mumuvv: 500000  ( 13, -13, 12, -12)
+    3211_eevv: 500000  ( 11, -11, 14, -14)
+    3211_mumuvv: 1000000  ( 13, -13, 14, -14)
+    3211_eevv:  500000 ( 11, -11, 16, -16)
+    3211_mumuvv: 500000  ( 13, -13, 16, -16)
+
+lxplus:bsub
+    210_eemumu:346004 
+    210_eeee:  346004 
+
+     
