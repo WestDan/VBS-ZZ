@@ -45,7 +45,7 @@ if [ -f "${OUTPUT}" ]
 then
     echo "$OUTPUT exists, would you like to cover it: [y/n]"
     read -t 60 yesno  # timeout 60s
-    case yesno in
+    case $yesno in
 	y)
 	    echo "Erase existing $OUTPUT, and create new one."
 	    rm $OUTPUT
