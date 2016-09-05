@@ -73,12 +73,6 @@ class OBJ_ELECTRON: public OBJ{
         TLorentzVector Lcl,L_trk,LF_trk,LF_tri; 
 };       
 
-class OBJ_LEPTON : public OBJ
-{
-    public:
-	double ID;
-};
-
 class OBJ_JET : public OBJ{
     public:
         double pt_em, eta_em, phi_em, m_em;
@@ -131,8 +125,5 @@ typedef vector<OBJ_MUON> VOmuon;
 typedef vector<OBJ_ELECTRON> VOelectron;
 typedef vector<OBJ_JET> VOjet;
 typedef vector<OBJ_MET> VOmet;
-typedef vector<OBJ_LEPTON> VOlepton;
-
-
 
 #endif

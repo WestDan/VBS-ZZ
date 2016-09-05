@@ -125,7 +125,6 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
     VOmuon goodm;
     VOelectron goode;
-    VOlepton goodl;
     VOjet goodj;
 
     VOmuon temp_muon;	 
@@ -197,6 +196,9 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 		// pileup Weight ??? 
 	    }
 	    Weight = Weight*pileWeight;
+
+	    double trigger_sf = evtInfo->auxdata<double>("HLT_mu20_iloose_L1MU15_OR_HLT_mu50_Mu_TrigSF"); // if there is no muon, can we use this statement ???
+cout << trigger_sf << endl;
 	    
 	    int index_muon = 0;
 	    for (auto muon : *quickAna->muons())
@@ -454,133 +456,66 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 	    int nele  = goode.size();
 	    int njet  = goodj.size();
 	    if ( (nmuon + nele) < 4 ) return EL::StatusCode::SUCCESS;
-	    if ( njet < 2 ) return EL::StatusCode::SUCCESS;
 	    m_fiducial++;
 
 	    // extract leptons
-	    OBJ_LEPTON lepton;
+	    vector<float> m_pt, m_eta, m_phi, m_e, m_charge, m_sf;
 	    for(int i=0; i<(int)goodm.size(); i++)
 	    {
-		lepton.pt = goodm[i].L.Pt();
-		lepton.eta = goodm[i].L.Eta();
-		lepton.phi = goodm[i].L.Phi();
-		lepton.E = goodm[i].L.E();
-//		lepton.type = goodm[i].type();
-//		lepton.quality = goodm[i].quality();
-		if(goodm[i].charge == 1)
-		{
-		    lepton.ID = 13;
-		}
-		else
-		{
-		    lepton.ID = -13;
-		}
-		goodl.push_back(lepton);
+		m_pt.push_back( goodm[i].L.Pt() );
+		m_eta.push_back( goodm[i].L.Eta() );
+		m_phi.push_back( goodm[i].L.Phi() );
+		m_e.push_back( goodm[i].L.E() );
+		m_charge.push_back( goodm[i].charge );
+		m_sf.push_back( goodm[i].sf );
 	    }
+	    vector<float> e_pt, e_eta, e_phi, e_e, e_charge, e_sf, e_trigSF, e_trigEFF;
 	    for(int i=0; i<(int)goode.size(); i++)
 	    {
-		lepton.pt = goode[i].L.Pt();
-		lepton.eta = goode[i].L.Eta();
-		lepton.phi = goode[i].L.Phi();
-		lepton.E = goode[i].L.E();
-//		lepton.type = goode[i].type();
-//		lepton.quality = goode[i].quality();
-		if(goode[i].charge == 1)
-		{
-		    lepton.ID = 11;
-		}
-		else
-		{
-		    lepton.ID = -11;
-		}
-		goodl.push_back(lepton);
+		e_pt.push_back( goode[i].L.Pt() );
+		e_eta.push_back( goode[i].L.Eta() );
+		e_phi.push_back( goode[i].L.Phi() );
+		e_e.push_back( goode[i].L.E() );
+		e_charge.push_back( goode[i].charge );
+		e_sf.push_back( goode[i].sf );
+		e_trigSF.push_back( goode[i].trigSF );
+		e_trigEFF.push_back( goode[i].trigEFF );
 	    }
 
-	    /*
-	    // find the first 4 largest pt leptons
-	    int lep[4] = {0, 0, 0, 0};
-	    for(int i=0; i<(int)goodl.size(); i++)
-	    {
-		double pt = goodl[i].pt;
-		if (pt > goodl[lep[0]].pt)
-		{
-		    lep[3] = lep[2];
-		    lep[2] = lep[1];
-		    lep[1] = lep[0];
-		    lep[0] = i;
-		}
-		else if ( pt > goodl[lep[1]].pt)
-		{
-		    lep[3] = lep[2];
-		    lep[2] = lep[1];
-		    lep[1] = i;
-		}
-		else if ( pt > goodl[lep[2]].pt)
-		{
-		    lep[3] = lep[2];
-		    lep[2] =i;
-		}
-		else if ( pt > goodl[lep[3]].pt)
-		{
-		    lep[3] = i;
-		}
-	    }
-	     */
-
-	    // assignment of leptons properties 
-	    vector<float> l_pt, l_eta, l_phi, l_e;
-	    vector<int> l_id;
-	    for (int i=0; i<(int)goodl.size(); i++)
-	    {
-		l_pt.push_back( goodl[i].pt );
-		l_eta.push_back( goodl[i].eta );
-		l_phi.push_back( goodl[i].phi );
-		l_e.push_back( goodl[i].E );
-//		type_l[i] = goodl[i].type;
-//		quality_l[i] = goodl[i].quality;
-		l_id.push_back( goodl[i].ID );
-	    }
-
-	    /*
-	    // find the first 2 largest pt jets
-	    int jet[2] = {0 ,0};
-	    for (int i=0; i<(int)goodj.size(); i++)
-	    {
-		double pt = goodj[i].pt;
-		if( pt > goodj[jet[0]].pt )
-		{
-		    jet[1] = jet[0];
-		    jet[0] = i;
-		}
-		else if ( pt > goodj[jet[1]].pt )
-		{
-		    jet[1] = i;
-		}
-	    }
-	    */
 	    // assignment of jet properties
-	    vector<float> j_pt, j_eta, j_phi, j_e;
+	    vector<float> j_pt, j_eta, j_phi, j_e, j_sf;
 	    for (int i=0; i<(int)goodj.size(); i++)
 	    {
 		j_pt.push_back(  goodj[i].pt );
 		j_eta.push_back( goodj[i].eta );
 		j_phi.push_back( goodj[i].phi );
 		j_e.push_back(   goodj[i].E );
+		j_sf.push_back( goodj[i].sf );
 		// any other jet properties that need to be recorded ?
 	    }
 
-	    TreeFltVVar["l_pt"]["Value"] = l_pt;
-	    TreeFltVVar["l_eta"]["Value"] = l_eta;
-	    TreeFltVVar["l_phi"]["Value"] = l_phi;
-	    TreeFltVVar["l_e"]["Value"] = l_e;
-	    TreeIntVVar["l_id"]["Value"] = l_id;
-	    TreeFltVVar["j_pt"]["Value"] = j_pt;
+	    TreeFltVVar["e_pt"]["Value"]  = e_pt;
+	    TreeFltVVar["e_eta"]["Value"] = e_eta;
+	    TreeFltVVar["e_phi"]["Value"] = e_phi;
+	    TreeFltVVar["e_e"]["Value"]   = e_e;
+	    TreeFltVVar["e_charge"]["Value"] = e_charge;
+	    TreeFltVVar["e_sf"]["Value"]  = e_sf;
+	    TreeFltVVar["e_trigSF"]["Value"]   = e_trigSF;
+	    TreeFltVVar["e_trigEFF"]["Value"]   = e_trigEFF;
+	    TreeFltVVar["m_pt"]["Value"]  = m_pt;
+	    TreeFltVVar["m_eta"]["Value"] = m_eta;
+	    TreeFltVVar["m_phi"]["Value"] = m_phi;
+	    TreeFltVVar["m_e"]["Value"]   = m_e;
+	    TreeFltVVar["m_charge"]["Value"] = m_charge;
+	    TreeFltVVar["m_sf"]["Value"]  = m_sf;
+	    TreeFltVVar["j_pt"]["Value"]  = j_pt;
 	    TreeFltVVar["j_eta"]["Value"] = j_eta;
 	    TreeFltVVar["j_phi"]["Value"] = j_phi;
-	    TreeFltVVar["j_e"]["Value"] = j_e;
+	    TreeFltVVar["j_e"]["Value"]   = j_e;
+	    TreeFltVVar["j_sf"]["Value"]  = j_sf;
 
 	    TreeStrVar["filename"]["Value"] = m_FileName;
-	    TreeIntVar["signal_bkg"]["Value"] = SB::_signal;
+	    TreeIntVar["signal_bkg"]["Value"] = SB::_signal; // ???
 	    TreeIntVar["run"]["Value"] = run;
 	    TreeUloVar["event"]["Value"] = event;
 	    TreeIntVar["njet"]["Value"] = njet;
@@ -592,8 +527,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 //	    TreeFltVar["met_y"]["Value"] = rmpy*0.001;
 	    TreeFltVar["pileupweight"]["Value"] = pileWeight;
 	    TreeFltVar["mcweight"]["Value"] = mcWeight;
-//	    TreeFltVar["lep_sf"]["Value"] = lep_sf;
-//	    TreeFltVar["trigsf"]["Value"] = trigger_sf;
+	    TreeFltVar["trigsf"]["Value"] = trigger_sf;
 	    Tree[sysname]->Fill();
 
 	}
