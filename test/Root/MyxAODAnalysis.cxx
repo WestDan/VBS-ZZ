@@ -237,13 +237,9 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 		// Isolation
 		float etcone20 = 0, ptcone20 = 0;
 		if(muon->isolation(etcone20, xAOD::Iso::etcone20))
-		{
-		    muonInfo.topoetcone20 = etcone20;
-		}
+		{    muonInfo.topoetcone20 = etcone20; 	}
 		if(muon->isolation(ptcone20, xAOD::Iso::ptcone20))
-		{
-		    muonInfo.ptcone20 = ptcone20;
-		}
+		{    muonInfo.ptcone20 = ptcone20; }
 
 		muon->auxdata < char >("All") = true; // can we change the value of muon object ??? 
 
@@ -449,7 +445,9 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 	    int nmuon = goodm.size();
 	    int nele  = goode.size();
 	    int njet  = goodj.size();
-	    if ( (nmuon + nele) < 4 ) return EL::StatusCode::SUCCESS; // at least 4 leptons needed.
+	    if( ! ( (nmuon == 4 && nele == 0) || ( nmuon == 2 && nele == 2) || ( nmuon == 0 && nele == 4) ) ) 
+		return EL::StatusCode::SUCCESS;
+//	    if ( (nmuon + nele) != 4 ) return EL::StatusCode::SUCCESS; // at least 4 leptons needed.
 	    m_fiducial++; // used for selection efficiency
 
 	    // extract leptons
@@ -516,9 +514,12 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 		int pair1_2 = ll_temp[i].index.second;
 		for(int j=i+1; j<(int)ll_temp.size(); j++)
 		{
-		    int pair2_1 = ll_temp[j].index.first;
-		    int pair2_2 = ll_temp[j].index.second;
-		    if( pair2_1 == pair1_1 || pair2_1 == pair1_2 || pair2_2 == pair1_1 || pair2_2 == pair1_2) continue;
+		    if(ll_temp[j].flavor == ll_temp[i].flavor )
+		    {
+			int pair2_1 = ll_temp[j].index.first;
+			int pair2_2 = ll_temp[j].index.second;
+			if( pair2_1 == pair1_1 || pair2_1 == pair1_2 || pair2_2 == pair1_1 || pair2_2 == pair1_2) continue;
+		    }
 		    float diff_temp = fabs(ll_temp[i].mass - ZMass) + fabs(ll_temp[j].mass - ZMass);
 		    if( diff_temp < diff)
 		    {
@@ -684,8 +685,6 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 		    l4_eta = leptons[3].Eta();
 		    l4_phi = leptons[3].Phi();
 		    l4_e   = leptons[3].E();
-
-		    
 		}
 	    }
 	    // assignment of jet properties
