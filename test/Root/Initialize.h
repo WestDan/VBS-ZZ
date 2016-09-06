@@ -371,14 +371,14 @@ void MyxAODAnalysis :: AddVarIntoTree(TTree * tree)
 
     if (file.is_open())
     {
-	char line[256];
-	while ( ! file.eof() )
+	string sline;
+	while ( getline(file, sline) )
 	{
+	    sline.erase(sline.begin(), find_if(sline.begin(), sline.end(), not1(ptr_fun<int, int>(isspace)))); // erase beginning space
+	    if(sline[0] == '#')
+	    {	continue;   }   // skip comment lines
+
 	    string varname, type;
-
-	    file.getline (line, 100);
-	    string sline(line);
-
 	    if(sline.find("Int_t") != string::npos)
 	    {
 		type = "I";

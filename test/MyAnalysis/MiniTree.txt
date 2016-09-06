@@ -1,3 +1,10 @@
+################################################ 
+# this keep a record of all the variables that
+# we want in the output tree for further cut
+# 
+# lines begin with '#' are comments and will be
+# ignored when dealt with.
+################################################
 Str      filename
 Int_t    signal_bkg
 Int_t    run
@@ -7,23 +14,61 @@ Int_t    nmuon
 Int_t    nele
 Float_t  pileupweight
 Float_t  mcweight
+Float_t  lep_sf
 Float_t  trigsf
-Vector_F e_pt
-Vector_F e_eta
-Vector_F e_phi
-Vector_F e_e
-Vector_F e_charge
-Vector_F e_sf
-Vector_F e_trigSF
-Vector_F e_trigEFF
-Vector_F m_pt
-Vector_F m_eta
-Vector_F m_phi
-Vector_F m_e
-Vector_F m_charge
-Vector_F m_sf
-Vector_F j_pt
-Vector_F j_eta
-Vector_F j_phi
-Vector_F j_e
-Vector_F j_sf
+Str      channel
+Float_t  l1_pt
+Float_t  l1_eta
+Float_t  l1_phi
+Float_t  l1_e
+### Float_t  l1_id
+Float_t  l2_pt
+Float_t  l2_eta
+Float_t  l2_phi
+Float_t  l2_e
+### Float_t  l2_id
+Float_t  l3_pt
+Float_t  l3_eta
+Float_t  l3_phi
+Float_t  l3_e
+### Float_t  l3_id
+Float_t  l4_pt
+Float_t  l4_eta
+Float_t  l4_phi
+Float_t  l4_e
+### Float_t  l4_id
+Float_t  leadingj_pt
+Float_t  leadingj_eta
+Float_t  leadingj_phi
+Float_t  leadingj_e
+Float_t  subleadingj_pt
+Float_t  subleadingj_eta
+Float_t  subleadingj_phi
+Float_t  subleadingj_e
+Float_t  z1_pt
+Float_t  z1_eta
+Float_t  z1_phi
+Float_t  z1_e
+Float_t  z1_m
+Float_t  z2_pt
+Float_t  z2_eta
+Float_t  z2_phi
+Float_t  z2_e
+Float_t  z2_m
+Float_t  zz_pt
+Float_t  zz_eta
+Float_t  zz_phi
+Float_t  zz_e
+Float_t  zz_m
+Float_t  jj_pt
+Float_t  jj_eta
+Float_t  jj_phi
+Float_t  jj_e
+Float_t  jj_m
+Float_t  delta_eta_jj
+Float_t  delta_R_ll_1
+Float_t  delta_R_ll_2
+Float_t  delta_R_zz
+Float_t  delta_R_jj
+Float_t  delta_R_zz_jj
+Float_t  centrality
