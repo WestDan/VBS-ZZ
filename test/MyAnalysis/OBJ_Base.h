@@ -1,7 +1,7 @@
 #ifndef MyAnalysis_OBJ_H
 #define MyAnalysis_OBJ_H
 
-//<Common Header>
+#include <utility>
 #include <TLorentzVector.h>
 #include <string>
 #include <vector>
@@ -21,9 +21,9 @@ const double Unit_GeV = 1000.; //MeV
 //<General, Muon, Electron, Jet, MET>
 class OBJ{
     public:
-        double E,Et;
-        double p,pt,px,py,pz;
-        double eta,phi,m;
+//        double E,Et;
+//        double p,pt,px,py,pz;
+//        double eta,phi,m;
         double d0,z0,d0err,z0err,d0sig,z0sig;
         double d0_old,z0_old,d0err_old,z0err_old,d0sig_old,z0sig_old;
         float sf,trigSF,trigEFF;
@@ -94,15 +94,10 @@ class OBJ_MET : public OBJ{
 class Pair {
     public:
         int flavor; //0-electron, 1-muon
-        vector<int> index;
-        vector<int> charge;
-        vector<TLorentzVector> lepton;
-        vector<TLorentzVector> lepton_trk;
+        pair<int, int> index;
         TLorentzVector Z;
         double mass;
         float sf,trigSF,trigEFF;
-        bool opposign; //charge*charge of two leptons, if -1 then true, else false
-
 };
 
 //class for quads, i.e. Z pairs
