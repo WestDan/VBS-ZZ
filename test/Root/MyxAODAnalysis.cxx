@@ -85,6 +85,10 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 	// for monitoring the execution process
 	cout << "event counter " << m_eventCounter << endl;
     }
+if(m_eventCounter == 1796 || m_eventCounter ==5613)
+{
+    cout << m_eventCounter << "beginning of execution" << endl;
+}
 
     // get eventinfo
     // what's the difference between the one with the one in Initialized.h file
@@ -174,6 +178,10 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 	}
 	// NOMINAL
 
+if(m_eventCounter == 1796 || m_eventCounter ==5613)
+{
+    cout << m_eventCounter << "before quickAna loop" << endl;
+}
 	// quickAna process
 	if( quickAna->applySystematicVariation (sysListItr) == CP::SystematicCode::Ok)
 	{
@@ -454,6 +462,19 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 	    vector<Pair> ll_temp, ll_good;
 	    ll_temp.clear();
 	    ll_good.clear();
+if(m_eventCounter == 1796 || m_eventCounter ==5613)
+{
+    cout << "Muon: " << endl;
+    for(int i=0; i<nmuon; i++)
+    {
+	cout << i << "\t" << goodm[i].L.Pt() << "\t" << goodm[i].L.Eta() << "\t" << goodm[i].charge << endl;
+    }
+    cout << "electron: " << endl;
+    for(int i=0; i<nele; i++)
+    {
+	cout << i << "\t" << goode[i].L.Pt() << "\t" << goode[i].L.Eta() << "\t" << goode[i].charge << endl;
+    }
+}
 	    for(int i=0; i<nmuon; i++)
 	    {
 		for(int j=i+1; j<nmuon; j++)
