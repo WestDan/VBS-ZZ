@@ -68,7 +68,7 @@ class oneplot:
         self._yaxis_title_offset = 1.2
         self._labelsize = 0.06
         self._lumi_in_pb = 30000.
-        self._draw_text = "Sherpa"
+        self._draw_text = "VBFNLO"
         self._center_mass_energy = "13 TeV"
         self._figtype=["png"] # or self._figtype=["png", "pdf", ...]
         
